@@ -1,0 +1,249 @@
+{% extends "base.html" %}
+{% block title %}BookShop|Cart{% endblock %}
+{% load cart %}
+{% load custom_filter %}
+{% block content %}
+{% load static %}
+
+<div id="tg-wrapper" class="tg-wrapper tg-haslayout">
+        <!--************************************
+				Inner Banner Start
+		*************************************-->
+        <div class="tg-innerbanner tg-haslayout tg-parallax tg-bginnerbanner" data-z-index="-100" data-appear-top-offset="600" data-parallax="scroll" data-image-src="{% static 'users/images/parallax/bgparallax-07.jpg' %}">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="tg-innerbannercontent">
+                            <h1>Giỏ sách</h1>
+                            <ol class="tg-breadcrumb">
+                                <li><a href="#">Trang chủ</a></li>
+                                <li class="tg-active"> <a href="#">Giỏ sách</a></li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--************************************
+				 End
+		*************************************-->
+
+        <!--***********Inner Banner*************************
+				Main Start
+		*************************************-->
+        <main id="tg-main" class="tg-main tg-haslayout">
+            <!--************************************
+					News Grid Start
+			*************************************-->
+            <div class="tg-sectionspace tg-haslayout">
+                <div class="container">
+                    <div class="row">
+                        <div id="tg-twocolumns" class="tg-twocolumns">
+
+                            <div class="col-xs-12 col-sm-4 col-md-4 col-lg-3 pull-left">
+                                <aside id="tg-sidebar" class="tg-sidebar">
+
+                                    {% comment %} <div class="tg-widget tg-widgetsearch">
+                                        <form action="#" class="tg-formtheme tg-formsearch " method="GET">
+                                            <div class="form-group">
+
+                                                <input type="text" name="search" class="form-group" placeholder="Tìm kiếm sách...">
+                                                <button type="submit"><i class="icon-magnifier"></i></button>
+                                            </div>
+                                        </form>
+                                    </div> {% endcomment %}
+
+                                </aside>
+                            </div>
+
+                            <div class="col-xs-12 col-sm-8 col-md-8 col-lg-9 pull-right">
+
+                                <h2> <span>Tất cả sách  </span> </h2>
+                                <div>
+                                    <form action="" autocomplete="off" method="POST">
+                                        <table class="styled-table">
+                                            <thead>
+
+                                                <tr>
+                                                    <th>STT</th>
+                                                    <th>Tên sách</th>
+                                                    <th>Hình ảnh</th>
+                                                    <th>Số lượng</th>
+                                                    <th>Đơn giá</th>
+                                                    <th>Thành tiền</th>
+                                                    <th>Quản lý</th>
+                                                </tr>
+                                            </thead>
+                                            
+                                            <tbody>
+                                            {% if books %}
+                                                {% for book in books %}
+                                                        <tr class="active-row">
+                                                            <td>{{forloop.counter}}</td>
+                                                            <td>{{book.book_name}}</td>
+                                                            <td><img src="../media/{{book.image}}" alt="image description" style="height: 100px;"></td>
+                                                            <td>
+                                                                {% if book|is_in_cart:request.session.cart %}
+                                                                <div class="m-auto d-flex" style="display: flex">
+                                                                {% comment %} <div class="d-flex justify-content-center align-items-center text-center "> {% endcomment %}
+                                                                <form action="/#{{book.id}}" class="d-flex justify-content-center align-items-center text-center " method="post" id="add-to-cart-form">
+                                                                    {% csrf_token %}
+                                                                    <input type="hidden" name='book' value='{{book.id}}'>
+														            <input type="hidden" name='remove' value='True'>
+                                                                    <input type="submit" value="-" class="btn btn-block btn-success border-right" style="width: 30px; margin-top: 10px">
+														            {% comment %} <button type="button" data-item-id="{{ book.id }}" id="minus-btn" class="btn btn-block btn-success border-right" style="width: 30px; margin-top: 10px"><i class="fa fa-minus"></button> {% endcomment %}
+                                                                    {% comment %} <div class="d-flex justify-content-center align-items-center mx-1 btn btn-light"><input type="number" min="1" max="{{book.qty}}" name='qty_book' value='{{book|cart_quantity:request.session.cart}}' style="width: 80px;"></div> {% endcomment %}
+                                                                </form>
+                                                                <div class="d-flex justify-content-center align-items-center mx-1 btn btn-light">
+                                                                    <input type="number" data-item-id="{{ book.id }}" min="1" max="{{book.qty}}" name='qty_book' id="quantity-input" value='{{book|cart_quantity:request.session.cart}}' style="width: 80px;">
+                                                                </div>
+                                                                <form action="/#{{book.id}}" class="d-flex justify-content-center align-items-center text-center" method="post">
+                                                                    {% csrf_token %}
+                                                                    {% comment %} s {% endcomment %}
+                                                                    <input type="hidden" name='book' value='{{book.id}}'>
+                                                                    <input type="submit" value="+" class="btn btn-block btn-success border-left"  style="width: 30px; margin-top: 10px">
+                                                                    {% comment %} <button type="button" id="plus-btn" data-item-id="{{ book.id }}" class="btn btn-block btn-success border-left"  style="width: 30px; margin-top: 10px"><i class="fa fa-plus"></i></button> {% endcomment %}
+                                                                </form>
+                                                            </div>
+                                                            {% endif %}
+                                                            </td>
+                                                            <td style="font-size : 15px">{{book.unit_price}} VNĐ</td>
+                                                            <td class="total" style="font-size : 15px">{{book|price_total:request.session.cart}} VNĐ</td>
+                                                            <td>
+                                                                <form action="/#{{book.id}}" method="delete">
+                                                                    {% csrf_token %}
+                                                                    <input type="hidden" name='book' value='{{book.id}}'>
+                                                                    <input type="submit" value="Xóa" class="btn btn-block btn-danger border-right">
+                                                                </form>
+                                                                {% comment %} <a href="#">Xóa </a> {% endcomment %}
+                                                            </td>
+                                                        </tr>
+                                                {% endfor %}
+                                                        
+                                                    <tr>
+                                                        <td colspan="7">
+                                                            <h5 style="color: red; text-align: left;">Tổng tiền :
+                                                                <span style="color:#00A963 ;">
+                                                                    {{books|total_cart_price:request.session.cart}} VNĐ
+                                                                </span>
+                                                        </h5>
+                                                        </td>
+                                                    </tr>
+                                                    <td colspan="7">
+                                                        <a href="#" data-toggle="modal" data-target="#exampleModal" class="btn btn-outline-info border rounded" style="background: green; width: 200px">Đặt hàng</a>
+                                                    </td>
+                                                    {% else %}
+                                                    <tr>
+                                                        <td colspan="7">
+                                                            <h5 style="color: red;">Hiện tại giỏ sách trống</h5>
+                                                        </td>
+                                                    </tr>
+                                                
+                                                {% endif %}
+                                            </tbody>
+                                        </table>
+                                    </form>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--************************************
+					News Grid End
+			*************************************-->
+        </main>
+        <!--************************************
+				Main End
+		*************************************-->
+    </div>
+    <div class="modal fade" id="exampleModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" >
+        <div class="modal-dialog" role="document" >
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">
+                  Cập nhật thông tin đặt hàng
+              </h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <hr>
+            <div class="modal-body">
+              <div>
+                <form action="/check-out" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                      <label >Địa chỉ</label>
+                      <input type="text" name="address" id="" class="form-group" aria-describedby="helpId">
+                    </div>
+                    <div class="form-group">
+                        <label>Số điện thoại</label>
+                        <input type="text" name="phone" id="" class="form-control" aria-describedby="helpId">
+                    </div>
+                    <div class="form-group">
+                        <label>Ghi chú</label>
+                        <input type="text" name="note" id="" class="form-control" aria-describedby="helpId">
+                    </div>  
+                      <input type="submit" class="btn float-right btn-outline-info col-lg-6" value="Xác nhận">
+                </form>
+              </div>
+            </div>
+        </div>
+          </div>
+        </div>
+      </div>
+      {% comment %} <script>
+        $(document).ready(function() {
+            $('#plus-btn').click(function() {
+              var itemId = $(this).data('item-id');
+              var inputEl = $('#quantity-input[data-item-id="' + itemId + '"]');
+              var currentValue = parseInt(inputEl.val());
+              var stockValue = parseInt(inputEl.attr('max'));
+              if (currentValue < stockValue) {
+                inputEl.val(currentValue + 1);
+                updateQuantity(itemId, currentValue + 1);
+              }
+            });
+          
+            $('#minus-btn').click(function() {
+              var itemId = $(this).data('item-id');
+              var inputEl = $('#quantity-input[data-item-id="' + itemId + '"]');
+              var currentValue = parseInt(inputEl.val());
+              if (currentValue > 1) {
+                inputEl.val(currentValue - 1);
+                updateQuantity(itemId, currentValue - 1);
+              }
+            });
+          
+            $('#quantity-input').on('input', function() {
+              var itemId = $(this).data('item-id');
+              var inputValue = parseInt($(this).val());
+              var stockValue = parseInt($(this).attr('max'));
+              if (isNaN(inputValue) || inputValue < 1) {
+                inputValue = 1;
+              }
+              if (inputValue > stockValue) {
+                inputValue = stockValue;
+              }
+              $(this).val(inputValue);
+              updateQuantity(itemId, inputValue);
+            });
+          
+            function updateQuantity(itemId, quantity) {
+              $.ajax({
+                url: '/cart/update_quantity/',
+                type: 'POST',
+                data: {
+                  'item_id': itemId,
+                  'quantity': quantity,
+                  'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function(data) {
+                  $('#cart-dropdown').html(data);
+                }
+              });
+            }
+          });
+      </script> {% endcomment %}
+{% endblock %}
